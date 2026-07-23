@@ -1,0 +1,181 @@
+#VRML_SIM R2025a utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/released/projects/objects/floors/protos/RectangleArena.proto"
+
+WorldInfo {
+  info [
+    "Self-Balancing Robot World"
+  ]
+  title "SBR"
+  basicTimeStep 8
+  contactProperties [
+    ContactProperties {
+      material1 "wheel"
+      coulombFriction [
+        0.8
+      ]
+    }
+  ]
+}
+Viewpoint {
+  orientation -0.27708696491382245 0.6726690073298629 0.6861043801439419 1.0686506946502037
+  position -0.9004478586974191 -0.8860964203884262 1.3083922509719004
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+RectangleArena {
+  floorSize 5 5
+  floorAppearance NULL
+  wallHeight 0.05
+}
+DEF SBR Robot {
+  translation 4.9649050204567e-07 0.22462764528121482 0.06506598014129883
+  rotation -0.999999999948154 -8.344092718676267e-07 1.0148656630729218e-05 0.17975861566882548
+  children [
+    DEF BODY Pose {
+      translation 0 0 0.06
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.76 0.6 0.42
+            roughness 0.9
+            metalness 0
+          }
+          geometry Box {
+            size 0.18 0.08 0.12
+          }
+        }
+      ]
+    }
+    DEF CYLINDER_TOP Pose {
+      translation 0 0 0.15
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.9 0.85 0.1
+            roughness 0.4
+            metalness 0.1
+          }
+          geometry Cylinder {
+            height 0.09
+            radius 0.03
+          }
+        }
+      ]
+    }
+    DEF LEFT_WHEEL HingeJoint {
+      jointParameters HingeJointParameters {
+        position 2.2635962957461033
+        anchor -0.095 0 0
+      }
+      device [
+        RotationalMotor {
+          name "leftMotor"
+          maxVelocity 30
+        }
+        PositionSensor {
+          name "leftEncoder"
+        }
+      ]
+      endPoint DEF LEFT_WHEEL_SOLID Solid {
+        translation -0.095 0 0
+        rotation 0.6851421801980668 0.24730446228652128 -0.6851428287931022 3.626473391238692
+        children [
+          Shape {
+            appearance PBRAppearance {
+              baseColor 0.15 0.15 0.15
+              roughness 0.9
+              metalness 0.1
+            }
+            geometry Cylinder {
+              height 0.025
+              radius 0.065
+            }
+          }
+        ]
+        name "left_wheel"
+        contactMaterial "wheel"
+        boundingObject Cylinder {
+          height 0.025
+          radius 0.065
+        }
+        physics Physics {
+          density -1
+          mass 0.05
+        }
+      }
+    }
+    DEF RIGHT_WHEEL HingeJoint {
+      jointParameters HingeJointParameters {
+        position 2.2635962958812685
+        anchor 0.095 0 0
+      }
+      device [
+        RotationalMotor {
+          name "rightMotor"
+          maxVelocity 30
+        }
+        PositionSensor {
+          name "rightEncoder"
+        }
+      ]
+      endPoint DEF RIGHT_WHEEL_SOLID Solid {
+        translation 0.095 0 0
+        rotation 0.6851413557493639 -0.24730650567167087 0.6851429156711699 3.6264780489804727
+        children [
+          Shape {
+            appearance PBRAppearance {
+              baseColor 0.15 0.15 0.15
+              roughness 0.9
+              metalness 0.1
+            }
+            geometry Cylinder {
+              height 0.025
+              radius 0.065
+            }
+          }
+        ]
+        name "right_wheel"
+        contactMaterial "wheel"
+        boundingObject Cylinder {
+          height 0.025
+          radius 0.065
+        }
+        physics Physics {
+          density -1
+          mass 0.05
+        }
+      }
+    }
+    Accelerometer {
+      name "accel"
+    }
+    Gyro {
+    }
+    Emitter {
+      channel 2
+    }
+    Receiver {
+      channel 1
+    }
+  ]
+  name "SBR"
+  boundingObject Pose {
+    translation 0 0 0.06
+    children [
+      Box {
+        size 0.18 0.08 0.12
+      }
+    ]
+  }
+  physics Physics {
+    density -1
+    mass 0.5
+    centerOfMass [
+      0 0 0.08
+    ]
+  }
+  controller "robot_controller"
+}
