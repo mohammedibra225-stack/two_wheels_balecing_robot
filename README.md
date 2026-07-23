@@ -6,7 +6,7 @@ A Webots simulation project featuring a **Two-Wheel Self-Balancing Robot (SBR)**
 ## 📸 Simulation Preview
 
 <p align="center">
-  <img src="./simulation_preview.png" alt="Two-Wheel Robot Simulation Preview" width="600"/>
+  <img src="./.SBR_world.png" alt="Two-Wheel Robot Simulation Preview" width="600"/>
 </p>
 
 ## 📌 Project Overview
