@@ -1,19 +1,10 @@
-"""
-=============================================================
- Contrôleur Webots - Pendule Inversé
- Basé sur les paramètres du rapport (.wbt) :
-   G(s) = -413.01 / (s² - 158.01)
- Modes : PID (angle seul) | LQR (angle + position)
-=============================================================
-"""
+
 
 from controller import Robot, Keyboard, Emitter, Receiver
 from math import atan, pi
 import numpy as np
 
-# ──────────────────────────────────────────────
-#  PARAMÈTRES PHYSIQUES (Table 1 du rapport)
-# ──────────────────────────────────────────────
+
 M        = 0.10     # Masse des roues [kg]
 m        = 0.50     # Masse châssis [kg]
 l        = 0.08     # Distance axe → centre de masse [m]
@@ -22,35 +13,27 @@ R        = 0.065    # Rayon roues [m]
 I        = 0.00195  # Moment d'inertie châssis [kg.m²]
 tau_max  = 10.0     # Couple max moteur [N.m]
 
-# Constantes dérivées de G(s) (calculées dans le rapport)
+
 q        = I*(M + m) + M*m*l**2          # = 0.00149 kg².m²
 K_num    = -(m*l) / (R*q)               # = -413.01
 omega0_sq = ((M+m)*m*g_acc*l) / q       # = 158.01  (pôle instable = +12.57 rad/s)
 
-# ──────────────────────────────────────────────
-#  GAINS PID  (équivalents MATLAB)
-#  T(t) = Kp*e + Ki*∫e + Kd*ė
-#  Négatifs car K_num < 0
-# ──────────────────────────────────────────────
+
 PID_Kp = -6500.0  # Augmenté depuis -8000 qui donnait 7s
 PID_Ki =  -0.5     # Quasi nul : évite tout windup
 PID_Kd = -75000   # Augmenté depuis -5700 pour mieux anticiper
 
-# ──────────────────────────────────────────────
-#  GAINS LQR  (conservés depuis ton code original)
-# ──────────────────────────────────────────────
+
 K_lqr = [14.0, -1.2, 165.0, 615.0]  # [phi, dphi, theta, dtheta] — valeurs optimisées
 
-# ──────────────────────────────────────────────
-#  INITIALISATION ROBOT
-# ──────────────────────────────────────────────
+
 robot    = Robot()
 TIMESTEP = int(robot.getBasicTimeStep())
 timestep = TIMESTEP
 
-maxSpeed = 15.0   # Limite vitesse angulaire roues [rad/s]
+maxSpeed = 15.0   
 
-# Moteurs
+
 motorNames = ['leftMotor', 'rightMotor']
 motor = []
 for name in motorNames:
@@ -74,9 +57,7 @@ keyb = Keyboard(); keyb.enable(TIMESTEP)
 
 robot.step(timestep)  # premier pas pour initialiser les capteurs
 
-# ──────────────────────────────────────────────
-#  VARIABLES D'ÉTAT
-# ──────────────────────────────────────────────
+
 gAng    = 0.0
 angle   = 0.0
 oT      = robot.getTime()
@@ -92,16 +73,12 @@ xD      = 0.0
 # Choix du contrôleur : True = PID | False = LQR
 use_pid = True   # ← change ici pour basculer de mode
 
-# ──────────────────────────────────────────────
-#  ÉTAT PID  (intégrateur + mémoire erreur)
-# ──────────────────────────────────────────────
+
 pid_integral   = 0.0
 pid_prev_error = 0.0
-pid_windup_lim = tau_max   # Anti-windup : limite l'intégrale
+pid_windup_lim = tau_max   
 
-# ──────────────────────────────────────────────
-#  FONCTIONS
-# ──────────────────────────────────────────────
+
 
 def setSpeed(left, right):
     motor[0].setVelocity(left)
@@ -180,9 +157,7 @@ def reset_param():
     oldT    = oT
     xD      = 0.0
 
-# ──────────────────────────────────────────────
-#  BOUCLE PRINCIPALE
-# ──────────────────────────────────────────────
+
 while robot.step(timestep) != -1:
 
     # ---- Communication superviseur ----
